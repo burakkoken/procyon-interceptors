@@ -1,12 +1,17 @@
-package controller
+package main
 
 import (
 	context "github.com/procyon-projects/procyon-context"
 	web "github.com/procyon-projects/procyon-web"
 )
 
+type User struct {
+	Name  string
+	Email string
+}
+
 type UserController interface {
-	GetUsers(context *web.WebRequestContext)
+	GetUser(context *web.WebRequestContext)
 }
 
 type ImpUserController struct {
@@ -21,10 +26,14 @@ func NewUserController(logger context.Logger) ImpUserController {
 
 func (controller ImpUserController) RegisterHandlers(registry web.HandlerRegistry) {
 	registry.Register(
-		web.Get(controller.GetUsers, web.Path("/api/users")),
+		web.Get(controller.GetUser, web.Path("/api/user")),
 	)
 }
 
-func (controller ImpUserController) GetUsers(context *web.WebRequestContext) {
-	controller.logger.Debug(context, "GetUsers is invoked")
+func (controller ImpUserController) GetUser(context *web.WebRequestContext) {
+	controller.logger.Info(context, "GetUser is invoked")
+	context.SetModel(User{
+		Name:  "Burak",
+		Email: "burakkokenn@gmail.com",
+	}).SetResponseContentType(web.MediaTypeApplicationJson)
 }
